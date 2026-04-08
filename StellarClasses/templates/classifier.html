@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StellarAI - Classify Object</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #0a0a1a;
+            color: #e0e0f0;
+        }
+.navbar {
+            background-color: #0d0d2b;
+            border-bottom: 1px solid #2a2a5a;
+        }
+.page-header {
+            background-color: #0d0d2b;
+            border-bottom: 1px solid #2a2a5a;
+            padding: 28px 0;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .page-subtitle {
+            color: #8080a0;
+            font-size: 0.9rem;
+        }
+.space-card {
+            background-color: #13132e;
+            border: 1px solid #2a2a5a;
+            border-radius: 14px;
+            padding: 24px;
+        }
+
+        .card-title-text {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #2a2a5a;
+        }
+.form-label {
+            color: #c0c0e0;
+            font-size: 0.88rem;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+.form-control, .form-range {
+            background-color: #0d0d2b;
+            border: 1px solid #2a2a5a;
+            color: #e0e0f0;
+            border-radius: 8px;
+        }
+
+        .form-control:focus {
+            background-color: #0d0d2b;
+            border-color: #9b8fff;
+            color: #e0e0f0;
+            box-shadow: 0 0 0 2px rgba(155, 143, 255, 0.25);
+        }
+
+        .form-control::placeholder {
+            color: #5050a0;
+        }
+.slider-value {
+            display: inline-block;
+            background-color: #9b8fff;
+            color: #0a0a1a;
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 2px 10px;
+            border-radius: 99px;
+            min-width: 48px;
+            text-align: center;
+        }
+.sample-btn {
+            background-color: transparent;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 99px;
+            cursor: pointer;
+        }
+
+        .sample-star    { border: 1px solid #4a3800; color: #ffc044; }
+        .sample-star:hover    { background-color: #3a2800; }
+        .sample-galaxy  { border: 1px solid #2a2a6a; color: #6ab4ff; }
+        .sample-galaxy:hover  { background-color: #0d1a40; }
+        .sample-quasar  { border: 1px solid #4a1a6a; color: #d080ff; }
+        .sample-quasar:hover  { background-color: #2a0a40; }
+.btn-classify {
+            background-color: #9b8fff;
+            color: #0a0a1a;
+            font-weight: 700;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .btn-classify:hover {
+            background-color: #7a6aee;
+            color: #fff;
+        }
+.guide-panel {
+            display: block;
+        }
+
+        .guide-item {
+            background-color: #0d0d2b;
+            border: 1px solid #2a2a5a;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+        }
+
+        .guide-item-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #9b8fff;
+            margin-bottom: 4px;
+        }
+
+        .guide-item-desc {
+            font-size: 0.82rem;
+            color: #8080a0;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .guide-item-range {
+            font-size: 0.78rem;
+            color: #6060a0;
+            margin-top: 4px;
+        }
+.result-panel {
+            display: none;
+        }
+
+        .result-class-card {
+            border-radius: 14px;
+            padding: 28px 20px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .result-icon {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+        }
+
+        .result-label {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        .result-class-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .result-description {
+            font-size: 0.88rem;
+            line-height: 1.7;
+        }
+
+        .result-star   { background-color: #1a1200; border: 1px solid #4a3800; }
+        .result-galaxy { background-color: #0a0a2a; border: 1px solid #2a2a6a; }
+        .result-qso    { background-color: #1a0a2a; border: 1px solid #4a1a6a; }
+
+        .result-star   .result-label { color: #ffc044; }
+        .result-galaxy .result-label { color: #6ab4ff; }
+        .result-qso    .result-label { color: #d080ff; }
+
+        .result-star   .result-description { color: #c0a060; }
+        .result-galaxy .result-description { color: #8090c0; }
+        .result-qso    .result-description { color: #b070d0; }
+.input-summary {
+            background-color: #0d0d2b;
+            border: 1px solid #2a2a5a;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+        }
+
+        .input-summary-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #8080a0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .input-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.83rem;
+            padding: 4px 0;
+            border-bottom: 1px solid #1a1a3a;
+        }
+
+        .input-row:last-child { border-bottom: none; }
+        .input-row-label { color: #8080a0; }
+        .input-row-value { color: #e0e0f0; font-weight: 600; }
+.btn-try-again {
+            background-color: transparent;
+            border: 1px solid #2a2a5a;
+            color: #9b8fff;
+            font-weight: 600;
+            padding: 10px;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+
+        .btn-try-again:hover {
+            background-color: #1a1a3a;
+            color: #9b8fff;
+        }
+.alert-space {
+            background-color: #2a0a0a;
+            border: 1px solid #6a1a1a;
+            color: #ff8080;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 0.88rem;
+        }
+.section-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #5050a0;
+            margin-bottom: 10px;
+        }
+input[type=range]::-webkit-slider-thumb {
+            background: #9b8fff;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ───────── NAVBAR ───────── -->
+<nav class="navbar navbar-dark px-4 py-3">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+        ✦ StellarAI
+    </a>
+    <div>
+        <a href="{% url 'home' %}" class="btn btn-sm btn-outline-light me-2">← Home</a>
+    </div>
+</nav>
+
+<!-- ───────── PAGE HEADER ───────── -->
+<div class="page-header">
+    <div class="container">
+        <div class="page-title">Classify a Cosmic Object</div>
+        <p class="page-subtitle">
+            Enter the spectroscopic readings from the telescope — or load a sample to try instantly.
+        </p>
+    </div>
+</div>
+
+<!-- ───────── MAIN CONTENT ───────── -->
+<div class="container py-4">
+
+    {% if error %}
+    <div class="alert-space mb-4">⚠ {{ error }}</div>
+    {% endif %}
+
+    <div class="row g-4">
+
+        <!-- ── LEFT: INPUT FORM ── -->
+        <div class="col-md-6">
+
+            <p class="section-label">Load a sample object</p>
+            <div class="mb-3">
+                <button type="button" class="sample-btn sample-star me-2" onclick="loadSample('star')">⭐ Star</button>
+                <button type="button" class="sample-btn sample-galaxy me-2" onclick="loadSample('galaxy')">🌌 Galaxy</button>
+                <button type="button" class="sample-btn sample-quasar" onclick="loadSample('quasar')">💫 Quasar</button>
+            </div>
+
+            <div class="space-card">
+                <div class="card-title-text">Spectroscopic Input Values</div>
+
+                <form method="POST" action="{% url 'classify' %}" id="classifyForm">
+                    {% csrf_token %}
+
+                    <!-- Alpha -->
+                    <div class="mb-3">
+                        <label class="form-label">Alpha (Right Ascension)</label>
+                        <input type="number" step="0.0001" class="form-control" name="alpha" id="alpha"
+                               placeholder="e.g. 135.6891" value="{{ form_data.alpha|default:'' }}" required>
+                    </div>
+
+                    <!-- Delta -->
+                    <div class="mb-3">
+                        <label class="form-label">Delta (Declination)</label>
+                        <input type="number" step="0.0001" class="form-control" name="delta" id="delta"
+                               placeholder="e.g. 32.4944" value="{{ form_data.delta|default:'' }}" required>
+                    </div>
+
+                    <!-- U filter with slider -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label mb-0">U — Ultraviolet brightness</label>
+                            <span class="slider-value" id="u_val">{{ form_data.u|default:'19.0' }}</span>
+                        </div>
+                        <input type="range" class="form-range" min="10" max="30" step="0.1"
+                               name="u" id="u" value="{{ form_data.u|default:'19.0' }}"
+                               oninput="document.getElementById('u_val').innerText = parseFloat(this.value).toFixed(1)">
+                    </div>
+
+                    <!-- G filter -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label mb-0">G — Green brightness</label>
+                            <span class="slider-value" id="g_val">{{ form_data.g|default:'18.0' }}</span>
+                        </div>
+                        <input type="range" class="form-range" min="10" max="30" step="0.1"
+                               name="g" id="g" value="{{ form_data.g|default:'18.0' }}"
+                               oninput="document.getElementById('g_val').innerText = parseFloat(this.value).toFixed(1)">
+                    </div>
+
+                    <!-- R filter -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label mb-0">R — Red brightness</label>
+                            <span class="slider-value" id="r_val">{{ form_data.r|default:'17.5' }}</span>
+                        </div>
+                        <input type="range" class="form-range" min="10" max="30" step="0.1"
+                               name="r" id="r" value="{{ form_data.r|default:'17.5' }}"
+                               oninput="document.getElementById('r_val').innerText = parseFloat(this.value).toFixed(1)">
+                    </div>
+
+                    <!-- I filter -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label mb-0">I — Near-infrared brightness</label>
+                            <span class="slider-value" id="i_val">{{ form_data.i|default:'17.0' }}</span>
+                        </div>
+                        <input type="range" class="form-range" min="10" max="30" step="0.1"
+                               name="i" id="i" value="{{ form_data.i|default:'17.0' }}"
+                               oninput="document.getElementById('i_val').innerText = parseFloat(this.value).toFixed(1)">
+                    </div>
+
+                    <!-- Z filter -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label mb-0">Z — Infrared brightness</label>
+                            <span class="slider-value" id="z_val">{{ form_data.z|default:'16.8' }}</span>
+                        </div>
+                        <input type="range" class="form-range" min="10" max="30" step="0.1"
+                               name="z" id="z" value="{{ form_data.z|default:'16.8' }}"
+                               oninput="document.getElementById('z_val').innerText = parseFloat(this.value).toFixed(1)">
+                    </div>
+
+                    <!-- Redshift -->
+                    <div class="mb-4">
+                        <label class="form-label">Redshift</label>
+                        <input type="number" step="0.0001" class="form-control" name="redshift" id="redshift"
+                               placeholder="e.g. 0.0003 for star, 0.5 for galaxy, 2.5 for quasar"
+                               value="{{ form_data.redshift|default:'' }}" required
+                               oninput="updateRedshiftHint(this.value)">
+                        <div id="redshift_hint" style="font-size:0.8rem; color:#9b8fff; margin-top:6px;">
+                            Enter a redshift value above
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-classify">
+                        ✦ Classify This Object
+                    </button>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- ── RIGHT: GUIDE PANEL / RESULT PANEL ── -->
+        <div class="col-md-6">
+
+            <!-- GUIDE PANEL — visible before prediction -->
+            <div id="guidePanel" class="guide-panel">
+                <p class="section-label">What do these values mean?</p>
+                <div class="space-card">
+                    <div class="card-title-text">Input Guide</div>
+
+                    <div class="guide-item">
+                        <div class="guide-item-title">Alpha & Delta</div>
+                        <p class="guide-item-desc">
+                            Sky coordinates — like longitude and latitude but for space.
+                            Alpha is right ascension (0–360°), Delta is declination (−90° to +90°).
+                        </p>
+                        <div class="guide-item-range">Alpha: 0 to 360 · Delta: −90 to +90</div>
+                    </div>
+
+                    <div class="guide-item">
+                        <div class="guide-item-title">U, G, R, I, Z — Filter Bands</div>
+                        <p class="guide-item-desc">
+                            These are how bright the object appears through 5 different light filters —
+                            from ultraviolet (u) to infrared (z). Lower number = brighter object.
+                        </p>
+                        <div class="guide-item-range">Typical range: 10 (very bright) to 30 (very faint)</div>
+                    </div>
+
+                    <div class="guide-item">
+                        <div class="guide-item-title">Redshift — The Most Important Value</div>
+                        <p class="guide-item-desc">
+                            How fast the object is moving away from us. Stars have near-zero redshift.
+                            Galaxies have moderate values. Quasars have extremely high values.
+                        </p>
+                        <div class="guide-item-range">
+                            ⭐ Star: ~0.0001 &nbsp;·&nbsp; 🌌 Galaxy: 0.05–1.0 &nbsp;·&nbsp; 💫 Quasar: 1.0–7.0
+                        </div>
+                    </div>
+
+                    <div class="guide-item">
+                        <div class="guide-item-title">Not sure what to enter?</div>
+                        <p class="guide-item-desc">
+                            Use the sample buttons above the form — they load real values
+                            from the SDSS dataset for each object type.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- RESULT PANEL — visible after prediction -->
+            {% if prediction %}
+            <div id="resultPanel" class="result-panel">
+
+                <p class="section-label">Classification result</p>
+
+                <!-- Star result -->
+                {% if prediction == 'STAR' %}
+                <div class="result-class-card result-star">
+                    <div class="result-icon">⭐</div>
+                    <div class="result-label">Classified As</div>
+                    <div class="result-class-name">Star</div>
+                    <p class="result-description">
+                        This object is a stellar body — likely a main sequence star, giant, or dwarf
+                        within or near our galaxy. Its near-zero redshift confirms it is relatively
+                        close to Earth compared to galaxies and quasars.
+                    </p>
+                </div>
+                {% endif %}
+
+                <!-- Galaxy result -->
+                {% if prediction == 'GALAXY' %}
+                <div class="result-class-card result-galaxy">
+                    <div class="result-icon">🌌</div>
+                    <div class="result-label">Classified As</div>
+                    <div class="result-class-name">Galaxy</div>
+                    <p class="result-description">
+                        This object is a galaxy — a vast system of billions of stars, gas, and dark matter.
+                        Its moderate redshift value places it at a significant distance from Earth, well
+                        beyond our own Milky Way.
+                    </p>
+                </div>
+                {% endif %}
+
+                <!-- Quasar result -->
+                {% if prediction == 'QSO' %}
+                <div class="result-class-card result-qso">
+                    <div class="result-icon">💫</div>
+                    <div class="result-label">Classified As</div>
+                    <div class="result-class-name">Quasar</div>
+                    <p class="result-description">
+                        This object is a quasi-stellar object (QSO) — one of the brightest and most
+                        energetic phenomena in the universe, powered by a supermassive black hole.
+                        Its extreme redshift places it at the far edge of the observable universe.
+                    </p>
+                </div>
+                {% endif %}
+
+                <!-- Input values used -->
+                <div class="input-summary">
+                    <div class="input-summary-title">Values Used</div>
+                    <div class="input-row">
+                        <span class="input-row-label">Alpha</span>
+                        <span class="input-row-value">{{ form_data.alpha }}</span>
+                    </div>
+                    <div class="input-row">
+                        <span class="input-row-label">Delta</span>
+                        <span class="input-row-value">{{ form_data.delta }}</span>
+                    </div>
+                    <div class="input-row">
+                        <span class="input-row-label">U / G / R / I / Z</span>
+                        <span class="input-row-value">{{ form_data.u }} / {{ form_data.g }} / {{ form_data.r }} / {{ form_data.i }} / {{ form_data.z }}</span>
+                    </div>
+                    <div class="input-row">
+                        <span class="input-row-label">Redshift</span>
+                        <span class="input-row-value">{{ form_data.redshift }}</span>
+                    </div>
+                </div>
+
+                <button class="btn-try-again" onclick="resetForm()">↺ Classify Another Object</button>
+
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<!-- ───────── FOOTER ───────── -->
+<div style="background-color:#0d0d2b; border-top:1px solid #2a2a5a; padding:20px 0; text-align:center; color:#5050a0; font-size:0.82rem; margin-top:40px;">
+    <div class="container">
+        ✦ StellarAI — RandomForestClassifier model trained on 100,000 SDSS observations · ~98% accuracy
+    </div>
+</div>
+
+<script>
+    // ── Sample data for each class ──
+    const samples = {
+        star: {
+            alpha: "1.4946", delta: "-1.5689",
+            u: "-0.06", g: "-0.5", r: "-0.94", i: "-0.79", z: "-0.30",
+            redshift: "-0.7886"
+        },
+        galaxy: {
+            alpha: "183.3215", delta: "0.5820",
+            u: "20.1", g: "18.9", r: "18.0", i: "17.5", z: "17.2",
+            redshift: "0.1540"
+        },
+        quasar: {
+            alpha: "246.7234", delta: "40.2100",
+            u: "18.9", g: "18.5", r: "18.3", i: "18.1", z: "17.9",
+            redshift: "2.7800"
+        }
+    };
+
+    // ── Load sample values into the form ──
+    function loadSample(type) {
+        const s = samples[type];
+        document.getElementById('alpha').value = s.alpha;
+        document.getElementById('delta').value = s.delta;
+
+        document.getElementById('u').value = s.u;
+        document.getElementById('u_val').innerText = s.u;
+
+        document.getElementById('g').value = s.g;
+        document.getElementById('g_val').innerText = s.g;
+
+        document.getElementById('r').value = s.r;
+        document.getElementById('r_val').innerText = s.r;
+
+        document.getElementById('i').value = s.i;
+        document.getElementById('i_val').innerText = s.i;
+
+        document.getElementById('z').value = s.z;
+        document.getElementById('z_val').innerText = s.z;
+
+        document.getElementById('redshift').value = s.redshift;
+        updateRedshiftHint(s.redshift);
+    }
+
+    // ── Redshift live hint ──
+    function updateRedshiftHint(val) {
+        const v = parseFloat(val);
+        const hint = document.getElementById('redshift_hint');
+        if (isNaN(v)) {
+            hint.innerText = "Enter a redshift value above";
+            hint.style.color = "#9b8fff";
+        } else if (v < 0.01) {
+            hint.innerText = "⭐ Very low — likely a Star";
+            hint.style.color = "#ffc044";
+        } else if (v < 1.0) {
+            hint.innerText = "🌌 Moderate — likely a Galaxy";
+            hint.style.color = "#6ab4ff";
+        } else {
+            hint.innerText = "💫 Very high — likely a Quasar";
+            hint.style.color = "#d080ff";
+        }
+    }
+
+    // ── After form submit: swap guide → result ──
+    function showResult() {
+        // Django handles the POST — this just ensures the result panel shows on reload
+    }
+
+    // ── Reset: show guide, hide result ──
+    function resetForm() {
+        document.getElementById('classifyForm').reset();
+        document.getElementById('u_val').innerText = "19.0";
+        document.getElementById('g_val').innerText = "18.0";
+        document.getElementById('r_val').innerText = "17.5";
+        document.getElementById('i_val').innerText = "17.0";
+        document.getElementById('z_val').innerText = "16.8";
+        document.getElementById('redshift_hint').innerText = "Enter a redshift value above";
+        document.getElementById('resultPanel').style.display = "none";
+        document.getElementById('guidePanel').style.display = "block";
+    }
+
+    // ── On page load: if prediction exists, swap panels ──
+    window.onload = function() {
+        {% if prediction %}
+        document.getElementById('guidePanel').style.display = "none";
+        document.getElementById('resultPanel').style.display = "block";
+        {% endif %}
+    };
+
+    // ── Init redshift hint if value already present ──
+    const existingRedshift = document.getElementById('redshift').value;
+    if (existingRedshift) { updateRedshiftHint(existingRedshift); }
+</script>
+
+</body>
+</html>

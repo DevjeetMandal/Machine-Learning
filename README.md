@@ -8,9 +8,7 @@ using real telescope data from NASA's Sloan Digital Sky Survey (SDSS DR17).
 
 
 
-Built with Python, scikit-learn, and Django as a portfolio project during my IMCA final year  
-
-at CTTC Bhubaneswar.
+Built with Python, scikit-learn, and Django
 
 
 
@@ -220,7 +218,7 @@ Then open `http://127.0.0.1:8000/` in your browser.
 
 \*\*Devjeet Mandal\*\*  
 
-IMCA Final Year | CTTC Bhubaneswar  
+IMCA Final Year   
 
 \[GitHub](https://github.com/DevjeetMandal) • \[LinkedIn](www.linkedin.com/in/devjeetmandal76577)
 
